@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -15,22 +15,33 @@ model User {
   email        String   @unique
   password     String
   name         String?
-  phone_number String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
+  playlist PlayList[]
+  song Song[]
   @@map("users")
 }
 
-model Character {
+model Song {
   id         Int       @id @default(autoincrement())
   name       String
-  date_birth DateTime?
-  image      String?
-  weight     Float?
-  history    String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  @@map("characters")
+  artist     String
+  album      String
+  year       Int
+  genre      String?
+  duration   Int
+  playlist PlayList[]
+  user       User @relation(fields: [userId],references: [id])
+  userId Int
+  @@map("songs")
 }
+
+model PlayList {
+  id         Int       @id @default(autoincrement())
+  name       String
+  user       User @relation(fields: [userId],references: [id])
+  song       Song @relation(fields: [songId],references: [id])
+  userId Int
+  songId Int
+
+  @@map("playlists")
+}
+
