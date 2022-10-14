@@ -52,3 +52,38 @@ export const detail = async(req,res) => {
         })
     }
 }
+
+export const findOnePlayList= async(req, res)=>{
+    try{
+      const{id} = req.params;
+      const playlistDetalle = await prisma.playList.findUnique({
+        where:{
+          id:Number(id)
+        },
+      })
+      const{songId} = playlistDetalle
+      const song = await prisma.song.findMany({
+        where:{
+          id:Number(songId)
+        },
+        select:{
+                id:true,
+                name:true,
+                artist:true,
+                album:true,
+                year:true,
+                genre:true,
+                duration:true
+        },
+      })
+      return res.json({
+          ok:true,
+          data: playlistDetalle, song
+      })
+    }catch(error){
+      return res.json({
+        ok:false,
+        error:error.message
+      })
+    }
+  }
