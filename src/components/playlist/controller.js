@@ -30,16 +30,20 @@ export const detail = async(req,res) => {
                 id:Number(id)
             },
             include:{
-                song:{
+                user:{
                     select:{
-                        tittle:true
+                        song:{
+                            where:{
+                                id:Number(id)
+                            }
+                        }
                     }
                 }
             }  
         })
         res.json({
             ok:true,
-            data:detailCharacter
+            data:detailPlaylist
         })
     }catch(error){
         res.json({
